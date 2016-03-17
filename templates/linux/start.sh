@@ -6,6 +6,7 @@ BUNDLE_PATH=$APP_PATH/current
 ENV_FILE=$APP_PATH/config/env.list
 PORT=<%= port %>
 USE_LOCAL_MONGO=<%= useLocalMongo? "1" : "0" %>
+DOCKER_OPTIONS="<%= dockerOptions %>"
 
 # Remove previous version of the app, if exists
 docker rm -f $APPNAME
@@ -29,6 +30,7 @@ if [ "$USE_LOCAL_MONGO" == "1" ]; then
     --hostname="$HOSTNAME-$APPNAME" \
     --env=MONGO_URL=mongodb://mongodb:27017/$APPNAME \
     --name=$APPNAME \
+    $DOCKER_OPTIONS \
     meteorhacks/meteord:base
 else
   docker run \
@@ -39,6 +41,7 @@ else
     --hostname="$HOSTNAME-$APPNAME" \
     --env-file=$ENV_FILE \
     --name=$APPNAME \
+    $DOCKER_OPTIONS \
     meteorhacks/meteord:base
 fi
 
@@ -55,5 +58,6 @@ fi
     --link=$APPNAME:backend \
     --publish=<%= sslConfig.port %>:443 \
     --name=$APPNAME-frontend \
+    $DOCKER_OPTIONS \
     meteorhacks/mup-frontend-server /start.sh
 <% } %>
