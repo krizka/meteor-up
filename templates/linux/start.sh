@@ -7,15 +7,16 @@ ENV_FILE=$APP_PATH/config/env.list
 PORT=<%= port %>
 USE_LOCAL_MONGO=<%= useLocalMongo? "1" : "0" %>
 DOCKER_OPTIONS="<%= dockerOptions %>"
+ITIS_UPDATING=""
 
+# We don't need to fail the deployment because of a docker hub downtime
+set +e
 # Remove previous version of the app, if exists
 docker rm -f $APPNAME
 
 # Remove frontend container if exists
 docker rm -f $APPNAME-frontend
 
-# We don't need to fail the deployment because of a docker hub downtime
-set +e
 docker pull meteorhacks/meteord:base
 set -e
 
